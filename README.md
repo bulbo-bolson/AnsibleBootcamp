@@ -146,3 +146,10 @@ Definiendo infraestructura como codigo.
           state: present
      
 ```
+
+### Opciones extra de ansible-playbook
+- Veremos todas las opciones con: `ansible-playbook --help | less`
+- Validar sintaxis: `ansible-playbook systems.yml --syntax-check`
+- check. Tipo noop, ves lo que haria pero no aplica cambios: `ansible-playbook systems.yml --check`
+- Imprimir hosts sobre los que correria el playbook: `ansible-playbook systems.yml --list-hosts`
+
