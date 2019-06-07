@@ -37,7 +37,7 @@ app
 db
 ```
 
-- Prueba de conectividad
+### Prueba de conectividad
 ```
 ansible all -m ping
 ```
@@ -48,27 +48,27 @@ ansible all -m ping
   - Expresiones regulares: `ansible '~(app|db).*' -m ping`
 
 
-- 2do filtro: **limit**
+### 2do filtro: **limit**
 ```
 ansible all -m ping --limit 'lb:app
 ```
 
-- Usar comandos ad hoc, **No son idempotentes como los modulos, no abusar**
+### Usar comandos ad hoc, **No son idempotentes como los modulos, no abusar**
 ```
 ansible all -a 'uname -a'
 ```
 
-- Definir paralelizaciones o forks
+### Definir paralelizaciones o forks
 ```
 ansible all -f 1 -a "free"
 ```
 
-## M√dulos
+## Modulos
 - Representa un recurso: package, , mongodb, sshd ... etc
-- Es an√logo a resources de puppet
+- Es analogo a resources de puppet
 - Cada recurso tiene un modulo, hay cientos
 - https://galaxy.ansible.com/
-- Listar m√dulos: `ansible-doc --list`
+- Listar modulos: `ansible-doc --list`
 
 ### Documentacion
 Ver opciones de uso del modulo:
@@ -85,4 +85,64 @@ Vamos a instalar el paquete vim en la maquina del loadbalancer. Para ello leemos
 ansible lb -m yum -b -a "name=vim state=present"
 ```
 
+### Ad Hoc approach. Command modules
+- raw
+  - para cuando no esta python instalado en el server destino
+  - ejecuta comandos ssh raw
+- command
+  - ejecuta comando remotamente sin una shell
+  - no tiene acceso a env
+  - no se pueden usar operadores: `| < > ...`
+  - `ansible app -m command -a 'free'`
+- shell
+  - ejecuta comando remotamente con /bin/sh
+  - `ansible app -m shell -a 'free | grep -i swap'`
+- script
+  - copia script a nodo remoto y tambien ejecuta
+- expect
+  - ejecuta comando interactivo y automatiza respuestas
 
+#### Estos modulos no son idempotentes por defecto
+Pero hay una opcion para hacerlos idempotentes, definiendo un fichero que especifica lo que se ha de crear con **creates**
+Aunque en nuestro script no creemos un fichero, lo podemos usar como *flag file*
+```
+ansible app -m command -a "mkdir /tmp/dir1 creates=/tmp/dir1"
+```
+
+## Playbooks
+Definiendo infraestructura como codigo.
+
+### Anatomia de un playbook
+- name # nombre del play 1
+- hosts # donde correr
+- become # sudo
+- vars # variables
+- tasks # lista de tareas. Que hacer
+  - name: nombre de tarea # opcional. Recomended for self-document
+    <modulo>: <argumentos>
+- name # nombre del play 2
+- ...
+```ansible
+---
+- name: App server configurations
+    hosts: app
+    become: true
+    become_user: admin
+    become_method: sudo
+    vars:
+      apache_port     = 8080
+      max_connections = 4000
+      ntp_conf        = /etc/ntp.conf
+    tasks:
+      - name: create app user
+        user: 
+          name: app 
+          state: present 
+          uid: 5002
+ 
+      - name: install git
+        yum: 
+          name: tree 
+          state: present
+     
+```
