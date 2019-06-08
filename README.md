@@ -111,6 +111,7 @@ ansible app -m command -a "mkdir /tmp/dir1 creates=/tmp/dir1"
 
 ## Playbooks
 Definiendo infraestructura como codigo.
+Diferencia importante con puppet: Aqui los pasos que definamos van en orden secuencial
 
 ### Anatomia de un playbook
 - name # nombre del play 1
@@ -151,5 +152,10 @@ Definiendo infraestructura como codigo.
 - Veremos todas las opciones con: `ansible-playbook --help | less`
 - Validar sintaxis: `ansible-playbook systems.yml --syntax-check`
 - check. Tipo noop, ves lo que haria pero no aplica cambios: `ansible-playbook systems.yml --check`
+- Imprimir tasks: `ansible-playbook systems.yml --list-tasks`
 - Imprimir hosts sobre los que correria el playbook: `ansible-playbook systems.yml --list-hosts`
+- Ejecutar a partir de task especifica: `ansible-playbook systems.yml --start-at-task=START_TASK`
+- Retry failed steps: `ansible-playbook systems.yml --limit @/tmp/systems.retry`
+- Step by step execution `ansible-playbook systems.yml --step`
+- Limitar scope a hosts sin importar lo que ponga en el campo hosts: `ansible-playbook systems.yml --limit app`
 
