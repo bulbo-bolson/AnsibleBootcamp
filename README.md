@@ -159,3 +159,81 @@ Diferencia importante con puppet: Aqui los pasos que definamos van en orden secu
 - Step by step execution `ansible-playbook systems.yml --step`
 - Limitar scope a hosts sin importar lo que ponga en el campo hosts: `ansible-playbook systems.yml --limit app`
 
+## Roles
+
+### Ansible Galaxy
+Repositorio de roles. Podemos usar roles sin tener que escribir uno.
+Además viene con una utilidad para generar la estructura (carpetas) de un rol: **ansible-galaxy init**
+- ayuda: `ansible-galaxy --help`
+```
+ansible-galaxy init --offline --init-path=roles apache
+- apache was created successfull
+```
+```
+tree
+.
+`-- roles
+    `-- apache
+        |-- README.md
+        |-- defaults
+        |   `-- main.yml
+        |-- files
+        |-- handlers
+        |   `-- main.yml
+        |-- meta
+        |   `-- main.yml
+        |-- tasks
+        |   `-- main.yml
+        |-- templates
+        |-- tests
+        |   |-- inventory
+        |   `-- test.yml
+        `-- vars
+            `-- main.yml
+```
+Dentro de tasks/main.yml incluimos todas las tasks:
+```
+cat tasks/main.yml
+--- tasks file for apache
+  - import_tasks: install.yml
+  - import_tasks: service.yml
+```
+
+### Aplicar roles desde un playbook
+Para aplicar la configuración de un rol, debemos hacerlo apuntando desde un playbook a ese rol. 
+Usamos para ello el keyword **roles** Ejemplo:
+```
+cat app.yml
+  - hosts: app
+    become: true
+    roles:
+      - apache
+```
+
+### Handlers
+Cuando queremos notificar que un cambio debe notificarse para realizar alguna acción en consecuencia, lo hacemos de forma separada en los handlers. Ejemplo: cuando el fichero de configuración httpd cambie, queremos que se reinicie el servicio apache para tomar los cambios.
+- handler:
+```
+cat handlers/main.yml
+---
+# handlers file for apache
+  - name: restart apache service
+    service:
+      name: httpd
+      state: restarted
+```
+- desde la task referenciamos el handler:
+```
+cat tasks/config.yml
+---
+  - name: copy apache config
+    copy:
+      src: httpd.conf
+      dest: /etc/httpd.conf
+      owner: root
+      group: root
+      mode: 0644
+  
+    # IMPORTANTE: el argumento del notify debe coincidir con el string de la descripcion del handler
+    notify: restart apache service
+```
