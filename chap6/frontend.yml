@@ -1,0 +1,6 @@
+---
+  - name: apply app
+    hosts: app
+    become: true
+    roles: 
+      - frontend

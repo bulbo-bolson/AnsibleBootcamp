@@ -1,0 +1,25 @@
+---
+# tasks file for frontend
+  - name: create /opt/app/release directory
+    file: 
+      path: /opt/app/release
+      state: directory
+      recurse: yes
+  - name: install unzip package
+    yum:
+      name: unzip
+      state: installed
+  - name: download application release version 1.1
+    get_url: 
+      url: https://github.com/devopsdemoapps/devops-demo-app/archive/1.1.zip
+      dest: /opt/app/release
+  - name: extract application
+    unarchive:
+      src: /opt/app/release/devops-demo-app-1.1.zip
+      dest: /opt/app/release
+      remote_src: yes
+  - name: make link from apache docroot to application
+    file:
+      src: /opt/app/release/devops-demo-app-1.1
+      dest: /var/www/html/app
+      state: link

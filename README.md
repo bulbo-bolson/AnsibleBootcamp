@@ -145,7 +145,6 @@ Diferencia importante con puppet: Aqui los pasos que definamos van en orden secu
         yum: 
           name: tree 
           state: present
-     
 ```
 
 ### Opciones extra de ansible-playbook
@@ -237,3 +236,11 @@ cat tasks/config.yml
     # IMPORTANTE: el argumento del notify debe coincidir con el string de la descripcion del handler
     notify: restart apache service
 ```
+- también podemos referenciar handlers de otros roles diferentes al que estamos
+
+
+### Dependencias: meta
+Podemos definir que un rol depende de otro en **meta/main.yml** en la sección dependencies:
+Por ejemplo, queremos que el rol apache tenga como dependencia el rol systems, lo añadimos al array:
+dependencies[systems]
+
