@@ -246,6 +246,11 @@ dependencies[systems]
 
 ### VARS
 
+#### Different vars
+- user defined
+- facts:
+  - las podemos descubrir con: `ansible app1 -m setup`
+
 #### Var precedence
 - e switch
 - role vars
@@ -253,3 +258,56 @@ dependencies[systems]
 - host vars: específicas de un host
 - group vars: agrupamos por entorno por ejemplo
 - role defaults: ejemplo: para apache por defecto puerto 80
+
+Por defecto, las vars de hashes son sobreescritas, no mergeadas. Podemos cambiar esto cambiando la configuracion:
+```
+cat ansible.cfg
+hash_behaviour = merge
+```
+#### Podemos definir vars en diferentes niveles
+##### Role defaults
+root@control:/workspace/AnsibleBootcampJav/chap7# cat roles/frontend/defaults/main.yml
+---
+# defaults file for frontend
+  app:
+    version: 1.5
+    env: LOCALDEV
+
+  fav:
+    color: white
+    fruit: orange
+    car: chevy
+    laptop: toshiba
+
+  dbconn:
+    host: localhost
+    username: root
+    password: changeme
+    dbname: devopsdemo
+```
+
+##### Group vars
+Podemos definir variables para cada entorno:
+```
+root@control:/workspace/AnsibleBootcampJav/chap7/environments# ls -l
+total 4
+-rw-r--r--. 1 root root 105 Jun 19 10:59 prod
+root@control:/workspace/AnsibleBootcampJav/chap7# pwd
+/workspace/AnsibleBootcampJav/chap7
+root@control:/workspace/AnsibleBootcampJav/chap7# mkdir -p group_vars/prod.yml
+root@control:/workspace/AnsibleBootcampJav/chap7# cat group_vars/prod.yml
+---
+  fav:
+    color: yellow
+    fruit: banana
+```
+
+##### A nivel de playbook
+```
+---
+  - hosts: app
+    become: true
+    vars:
+      fav:
+        fruit: mango
+```

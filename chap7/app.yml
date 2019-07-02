@@ -1,0 +1,9 @@
+---
+  - name: app server playbook
+    hosts: app
+    become: true
+    gather_facts: no
+    roles:
+      - apache
+      - php
+      - frontend
