@@ -244,3 +244,12 @@ Podemos definir que un rol depende de otro en **meta/main.yml** en la sección d
 Por ejemplo, queremos que el rol apache tenga como dependencia el rol systems, lo añadimos al array:
 dependencies[systems]
 
+### VARS
+
+#### Var precedence
+- e switch
+- role vars
+- playbook vars
+- host vars: específicas de un host
+- group vars: agrupamos por entorno por ejemplo
+- role defaults: ejemplo: para apache por defecto puerto 80
