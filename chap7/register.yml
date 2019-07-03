@@ -1,0 +1,12 @@
+- name: register variable example
+  hosts: local
+  gather_facts: no
+  tasks:
+    - name: run a shell command and register result
+      shell: "networkctl status eth0"
+      register: result
+    - name: print registered variable
+      debug: var=result
+    - name: execute this conditionally
+      command: uptime
+      when: result.changed == true

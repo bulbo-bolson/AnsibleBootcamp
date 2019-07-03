@@ -311,3 +311,25 @@ root@control:/workspace/AnsibleBootcampJav/chap7# cat group_vars/prod.yml
       fav:
         fruit: mango
 ```
+
+#### Registered variables
+Podemos registrar el retorno de algo para tomar una decisión en base al output
+Ejemplo:
+```
+- name: register variable example
+  hosts: local
+  tasks:
+    - name: run a shell command and register result
+      shell: "/sbin/ifconfig eth1"
+      register: result
+    - name: print registered variable
+      debug: var=result
+```
+
+#### Fact variables
+Con el módulo setup podemos consultar los facts de todos o un host:
+(Podemos filtrar por inventario para sacar los hosts que nos interesen)
+- Obtener todos los facts: `ansible all -m setup`
+- Filtrar por un fact: `ansible all -m setup -a "filter=ansible_os_family"`
+- Filtrar por un patron: `ansible all -m setup -a "filter=ansible_mem*"`
+- Obtener todos los facts en formato json (los almacena en el directorio pasado como argumento a --tree y losordena por host): `ansible all -m setup --tree /tmp/facts`
