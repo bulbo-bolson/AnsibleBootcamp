@@ -266,6 +266,7 @@ hash_behaviour = merge
 ```
 #### Podemos definir vars en diferentes niveles
 ##### Role defaults
+```
 root@control:/workspace/AnsibleBootcampJav/chap7# cat roles/frontend/defaults/main.yml
 ---
 # defaults file for frontend
