@@ -334,3 +334,9 @@ Con el módulo setup podemos consultar los facts de todos o un host:
 - Filtrar por un fact: `ansible all -m setup -a "filter=ansible_os_family"`
 - Filtrar por un patron: `ansible all -m setup -a "filter=ansible_mem*"`
 - Obtener todos los facts en formato json (los almacena en el directorio pasado como argumento a --tree y losordena por host): `ansible all -m setup --tree /tmp/facts`
+
+## Galaxy
+- Web: https://galaxy.ansible.com
+- Ejemplo de instalacion de rol de galaxy: ansible-galaxy install <username.role>: `ansible-galaxy install geerlingguy.docker`
+- Por defecto se descargan en **~/.ansible/roles**
+
