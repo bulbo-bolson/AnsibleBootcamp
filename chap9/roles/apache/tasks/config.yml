@@ -1,0 +1,13 @@
+---
+- name: put apache config
+  copy:
+    src: httpd.conf # relativo a directorio files/ 
+    dest: /etc/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  # IMPORTANTE: el argumento de notify debe coincidir con el string de la descripcion del handler
+  notify: restart apache service
+  tags:
+    - apache
+    - config

@@ -396,3 +396,9 @@ playbook: site.yml
   play #1 (app): app server playbook    TAGS: []
       TASK TAGS: [apache, config]
 ```
+
+## Conditionals and iterators
+- [conditionals](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html)
+- [iterators](https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html)
+
+

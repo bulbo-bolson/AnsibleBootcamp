@@ -1,0 +1,9 @@
+---
+  - name: install php packages
+    yum:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+    - php
+    - php-mysql
+    notify: restart apache service

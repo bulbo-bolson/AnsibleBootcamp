@@ -1,0 +1,19 @@
+---
+# tasks file for systems
+  - name: create user admin
+    user:
+      name: admin
+      uid: 5001
+      state: present
+
+  - name: remove user dojo
+    user:
+      name: dojo
+      state: absent
+
+  - name: install packages
+    package:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - "{{ systems.packages }}"

@@ -1,0 +1,49 @@
+---
+- name: base systems configurations for linux server
+  hosts: prod
+  become: true
+  gather_facts: no # speed up. gather facts tarda mucho
+  tasks:
+  - name: create user admin
+    user:
+      name: admin
+      uid: 5001
+      state: present
+
+  - name: remove user dojo
+    user:
+      name: dojo
+      state: absent
+
+  - name: install tree
+    package:
+      name: tree
+      state: present
+
+  - name: install ntp
+    package:
+      name: ntp
+      state: present
+
+  - name: start ntp service
+    service:
+      name: ntpd
+      state: started    
+
+- name: configuring app servers only
+  hosts: app
+  become: true
+  gather_facts: no
+  tasks:
+  - name: create user deploy
+    user:
+      name: deploy
+      uid: 5003
+      state: present
+  
+  - name: install git
+    package:
+      name: git
+      state: present
+
+
