@@ -338,5 +338,61 @@ Con el módulo setup podemos consultar los facts de todos o un host:
 ## Galaxy
 - Web: https://galaxy.ansible.com
 - Ejemplo de instalacion de rol de galaxy: ansible-galaxy install <username.role>: `ansible-galaxy install geerlingguy.docker`
-- Por defecto se descargan en **~/.ansible/roles**
+- Por defecto se descargan en **~/.ansible/roles** ya que hay una variable de entorno que lo define. La podemos ver con: `ansible-config dump | grep -i role`
+- Aunque podemos editar ansible.cfg para dejarlos donde queramos, cada path separado por ':' : `roles_path = roles:galaxy-roles`
+- Para personalizar la configuracion de un role, podemos hacer un override de las variables que están como default en el role, 
+  una buena práctica es dejarlas en group_vars:
+```
+root@control:/workspace/AnsibleBootcampJav# cat chap8/group_vars/prod.yml
+---
+  fav:
+    color: yellow
+    fruit: banana
 
+  haproxy_backend_servers:
+    - name: app1
+      address: 192.168.61.12:80
+    - name: app2
+      address: 192.168.61.13:80
+  haproxy_backend_httpchk: ''
+
+  mysql_databases:
+    - name: devopsdemo
+  mysql_users:
+    - name: devops
+      password: devops
+      priv: "devopsdemo.*:ALL"
+  mysql_root_password: root
+```  
+## Tags
+Podemos etiquetar nuestras tasks con tags específicos, para llamar solo porciones de roles por ejemplo:
+Taggeamos:
+```
+vi chap8/roles/apache/tasks/config.yml
+tags:
+      - apache
+      - config
+```
+Se puede etiquetar:
+- A nivel de task
+- A nivel de include_task
+- A nivel de rol (todas las tasks de ese rol lo heredan)
+
+Lo llamamos de forma selectiva:
+```
+ansible-playbook site.yml --tags=app,config
+```
+
+También podemos mostrar todas las tags de un playbook:
+```
+root@control:/workspace/AnsibleBootcampJav/chap8# ansible-playbook site.yml --list-tags
+ [WARNING]: Found both group and host with same name: db
+
+ [WARNING]: Found both group and host with same name: lb
+
+
+playbook: site.yml
+
+  play #1 (app): app server playbook    TAGS: []
+      TASK TAGS: [apache, config]
+```
